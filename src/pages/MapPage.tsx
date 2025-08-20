@@ -37,6 +37,16 @@ const MapPage = () => {
       navigate('/');
       return;
     }
+    // Adicione este novo useEffect
+useEffect(() => {
+  // Este efeito roda toda vez que o painel abre ou fecha
+  if (mapRef.current) {
+    // Espera um pouco para a animação do painel terminar
+    setTimeout(() => {
+      mapRef.current.invalidateSize(true); // O 'true' ajuda na animação
+    }, 500); // Mesmo tempo da animação (duration-500)
+  }
+}, [selectedPOI]); // A "mágica": Roda sempre que o estado 'selectedPOI' mudar
 
     // Carregar Leaflet e plugins dinamicamente
     const loadLeafletAndInitialize = async () => {
@@ -374,15 +384,8 @@ const MapPage = () => {
                       </div>
                     </div>
                      <Button
-                      onClick={() => {
-                        setSelectedPOI(null);
-                            // Espera a animação de 500ms terminar e AVISA o mapa para se reajustar
-                            setTimeout(() => {
-                        if (mapRef.current) {
-                            mapRef.current.invalidateSize();
-                            }
-                          }, 500); 
-                        }}
+                      // CÓDIGO SIMPLIFICADO E CORRETO
+                      onClick={() => setSelectedPOI(null)}
                       variant="ghost"
                       size="sm"
                       className="text-gray-500 hover:text-gray-700"
