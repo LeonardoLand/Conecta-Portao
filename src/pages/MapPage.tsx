@@ -376,9 +376,13 @@ const MapPage = () => {
                      <Button
                       onClick={() => {
                         setSelectedPOI(null);
-                        // Força atualização completa da página para garantir que o mapa volte ao normal
-                        window.location.reload();
-                      }}
+                            // Espera a animação de 500ms terminar e AVISA o mapa para se reajustar
+                            setTimeout(() => {
+                        if (mapRef.current) {
+                            mapRef.current.invalidateSize();
+                            }
+                          }, 500); 
+                        }}
                       variant="ghost"
                       size="sm"
                       className="text-gray-500 hover:text-gray-700"
