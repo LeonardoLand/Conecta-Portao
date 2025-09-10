@@ -37,17 +37,7 @@ const MapPage = () => {
       navigate('/');
       return;
     }
-    // Adicione este novo useEffect
-useEffect(() => {
-  // Este efeito roda toda vez que o painel abre ou fecha
-  if (mapRef.current) {
-    // Espera um pouco para a animação do painel terminar
-    setTimeout(() => {
-      mapRef.current.invalidateSize(true); // O 'true' ajuda na animação
-    }, 500); // Mesmo tempo da animação (duration-500)
-  }
-}, [selectedPOI]); // A "mágica": Roda sempre que o estado 'selectedPOI' mudar
-
+  
     // Carregar Leaflet e plugins dinamicamente
     const loadLeafletAndInitialize = async () => {
       try {
@@ -80,9 +70,7 @@ useEffect(() => {
         if (!window.L.markerClusterGroup) {
           await loadScript('https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js');
         }
-
-        // Inicializar o mapa após carregar tudo
-        // Inicializar o mapa após carregar tudo
+        
         setIsLoading(false);
 
       } catch (error) {
@@ -141,13 +129,12 @@ useEffect(() => {
       return;
     }
 
-    // Limpar mapa existente
     if (mapRef.current) {
       mapRef.current.remove();
     }
 
     const L = window.L;
-    const portaoCoords = [-29.701944, -51.241944];
+    const portaoCoords: [number, number] = [-29.701944, -51.241944];
     const initialZoom = 14;
     
     const southWest = L.latLng(-29.77, -51.32); 
@@ -167,7 +154,6 @@ useEffect(() => {
       attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    // Criar máscara escura ao redor de Portão
     const portaoVisibleArea = [
       [bounds.getSouthWest().lat, bounds.getSouthWest().lng],
       [bounds.getNorthWest().lat, bounds.getNorthWest().lng],
@@ -190,7 +176,6 @@ useEffect(() => {
     markersLayerRef.current = L.markerClusterGroup();
     map.addLayer(markersLayerRef.current);
 
-    // Buscar POIs
     fetchAndDrawPOIs();
   };
 
@@ -274,11 +259,6 @@ useEffect(() => {
         const marker = L.marker([lat, lon], { icon: icons[type as keyof typeof icons] || icons.default });
         marker.bindTooltip(name);
         
-        // Simular dados de avaliação (mockup)
-        const mockRating = Math.round((Math.random() * 2 + 3) * 10) / 10; // 3.0 a 5.0
-        const mockReviews = Math.floor(Math.random() * 50) + 5; // 5 a 55 avaliações
-        
-        // Adicionar evento de clique para abrir painel lateral
         marker.on('click', () => {
           setSelectedPOI({
             name,
@@ -288,8 +268,8 @@ useEffect(() => {
             accessibility: accessibilityInfo,
             lat,
             lon,
-            rating: Math.round((Math.random() * 1.5 + 3.5) * 10) / 10, // 3.5 a 5.0
-            reviewCount: Math.floor(Math.random() * 8) + 2 // 2 a 10 avaliações
+            rating: Math.round((Math.random() * 1.5 + 3.5) * 10) / 10,
+            reviewCount: Math.floor(Math.random() * 8) + 2
           });
         });
         
@@ -298,7 +278,6 @@ useEffect(() => {
       
       allPoisRef.current.sort((a, b) => a.name.localeCompare(b.name));
 
-      // Adicionar todos os marcadores
       allPoisRef.current.forEach(poi => {
         if (poi.marker && markersLayerRef.current) {
           markersLayerRef.current.addLayer(poi.marker);
@@ -326,7 +305,6 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -351,8 +329,11 @@ useEffect(() => {
           </div>
         </div>
       </header>
-
-      <main className="w-full h-screen relative flex">
+      
+      {/* ==================================================================== */}
+      {/* ALTERAÇÃO 1: O container <main> agora é apenas 'relative' */}
+      {/* ==================================================================== */}
+      <main className="w-full h-screen relative">
         {isLoading ? (
           <div className="flex items-center justify-center h-full bg-gray-100 w-full">
             <div className="text-center">
@@ -362,17 +343,27 @@ useEffect(() => {
           </div>
         ) : (
           <>
+            {/* ==================================================================== */}
+            {/* ALTERAÇÃO 2: O mapa agora é SEMPRE w-full. O bug do resize é impossível. */}
+            {/* ==================================================================== */}
             <div 
               id="map" 
-              className={`h-full transition-all duration-500 ${selectedPOI ? 'w-2/3' : 'w-full'}`}
+              className="h-full w-full"
               style={{ height: 'calc(100vh - 80px)' }}
             />
             
-            {/* Painel lateral de acessibilidade */}
-            {selectedPOI && (
-              <div className="w-1/3 bg-white shadow-2xl border-l border-gray-200 h-full overflow-y-auto">
+            {/* ==================================================================== */}
+            {/* ALTERAÇÃO 3: O painel agora é 'absolute', flutua sobre o mapa */}
+            {/* e usa 'transform' para a animação de deslizar. */}
+            {/* ==================================================================== */}
+            <div className={`
+              absolute top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-10 
+              border-l border-gray-200 overflow-y-auto 
+              transition-transform duration-300 ease-in-out
+              ${selectedPOI ? 'translate-x-0' : 'translate-x-full'}
+            `}>
+              {selectedPOI && (
                 <div className="p-6">
-                  {/* Header do painel */}
                   <div className="flex items-start justify-between mb-6">
                     <div className="flex items-center space-x-3">
                       <div className="p-2 bg-conecta-blue/10 rounded-lg">
@@ -383,8 +374,10 @@ useEffect(() => {
                         <p className="text-sm text-gray-600">{selectedPOI.category}</p>
                       </div>
                     </div>
-                     <Button
-                      // CÓDIGO SIMPLIFICADO E CORRETO
+                    {/* ==================================================================== */}
+                    {/* ALTERAÇÃO 4: O onClick agora é super simples, sem gambiarras. */}
+                    {/* ==================================================================== */}
+                    <Button
                       onClick={() => setSelectedPOI(null)}
                       variant="ghost"
                       size="sm"
@@ -451,7 +444,6 @@ useEffect(() => {
                   {/* Detalhes de Acessibilidade */}
                   <div className="space-y-4">
                     <h4 className="font-semibold text-gray-900">Informações Detalhadas</h4>
-                    
                     <div className="space-y-3">
                       <div className="flex justify-between py-2 border-b border-gray-100">
                         <span className="text-sm text-gray-600">Entrada Acessível</span>
@@ -465,17 +457,14 @@ useEffect(() => {
                            selectedPOI.accessibility.status === 'no' ? 'Não' : 'N/A'}
                         </span>
                       </div>
-                      
                       <div className="flex justify-between py-2 border-b border-gray-100">
                         <span className="text-sm text-gray-600">Banheiro Adaptado</span>
                         <span className="text-sm text-gray-600">Não informado</span>
                       </div>
-                      
                       <div className="flex justify-between py-2 border-b border-gray-100">
                         <span className="text-sm text-gray-600">Estacionamento</span>
                         <span className="text-sm text-gray-600">Não informado</span>
                       </div>
-                      
                       <div className="flex justify-between py-2 border-b border-gray-100">
                         <span className="text-sm text-gray-600">Circulação Interna</span>
                         <span className="text-sm text-gray-600">Não informado</span>
@@ -506,8 +495,6 @@ useEffect(() => {
                   {/* Seção de Nova Avaliação */}
                   <div className="mt-6 p-4 bg-conecta-blue/5 rounded-lg border border-conecta-blue/20">
                     <h5 className="font-medium text-conecta-blue mb-3">Avaliar este local</h5>
-                    
-                    {/* Estrelas para avaliação */}
                     <div className="mb-3">
                       <p className="text-sm text-gray-600 mb-2">Sua avaliação:</p>
                       <div className="flex items-center space-x-1">
@@ -524,8 +511,6 @@ useEffect(() => {
                         ))}
                       </div>
                     </div>
-
-                    {/* Comentário */}
                     <div className="mb-3">
                       <p className="text-sm text-gray-600 mb-2">Comentário (opcional):</p>
                       <Textarea
@@ -535,7 +520,6 @@ useEffect(() => {
                         className="min-h-[80px] text-sm"
                       />
                     </div>
-
                     <Button 
                       variant="outline" 
                       size="sm"
@@ -554,44 +538,31 @@ useEffect(() => {
                     </Button>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </>
         )}
       </main>
 
       <style dangerouslySetInnerHTML={{
         __html: `
+          .leaflet-pane, .leaflet-top, .leaflet-bottom {
+            z-index: 1 !important;
+          }
+          .leaflet-tooltip {
+            z-index: 2 !important;
+          }
           .accessibility-status {
             padding: 2px 6px;
             border-radius: 3px;
             font-size: 12px;
           }
-          .accessibility-status.yes {
-            background-color: #d4edda;
-            color: #155724;
-          }
-          .accessibility-status.limited {
-            background-color: #fff3cd;
-            color: #856404;
-          }
-          .accessibility-status.no {
-            background-color: #f8d7da;
-            color: #721c24;
-          }
-          .accessibility-status.unknown {
-            background-color: #e2e3e5;
-            color: #383d41;
-          }
-          .popup-category {
-            color: #666;
-            font-style: italic;
-          }
-          .popup-accessibility {
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid #eee;
-          }
+          .accessibility-status.yes { background-color: #d4edda; color: #155724; }
+          .accessibility-status.limited { background-color: #fff3cd; color: #856404; }
+          .accessibility-status.no { background-color: #f8d7da; color: #721c24; }
+          .accessibility-status.unknown { background-color: #e2e3e5; color: #383d41; }
+          .popup-category { color: #666; font-style: italic; }
+          .popup-accessibility { margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee; }
         `
       }} />
     </div>

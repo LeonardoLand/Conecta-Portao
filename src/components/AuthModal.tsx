@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -21,43 +20,76 @@ const AuthModal = ({ isOpen, onClose, mode }: AuthModalProps) => {
     password: '',
   });
   
-  const { login, signup } = useAuth();
+  // A função de login continua vindo do seu AuthContext
+  const { login } = useAuth(); 
   const { toast } = useToast();
 
+  // ====================================================================
+  // ALTERAÇÃO PRINCIPAL FEITA AQUI
+  // A função handleSubmit agora sabe como falar com a nossa API de cadastro
+  // ====================================================================
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    try {
-      let success = false;
-      if (mode === 'login') {
-        success = await login(formData.email, formData.password);
-      } else {
-        success = await signup(formData.name, formData.email, formData.password);
-      }
-
-      if (success) {
+    if (mode === 'login') {
+      // --- LÓGICA DE LOGIN (continua como antes) ---
+      try {
+        const success = await login(formData.email, formData.password);
+        if (success) {
+          toast({
+            title: 'Login realizado!',
+            description: 'Bem-vindo de volta!',
+          });
+          onClose();
+        } else {
+          throw new Error('Credenciais inválidas');
+        }
+      } catch (error) {
         toast({
-          title: mode === 'login' ? 'Login realizado!' : 'Conta criada!',
-          description: mode === 'login' ? 'Bem-vindo de volta!' : 'Sua conta foi criada com sucesso!',
-        });
-        onClose();
-      } else {
-        toast({
-          title: 'Erro',
-          description: 'Verifique os dados e tente novamente.',
+          title: 'Erro no login',
+          description: 'Verifique seu e-mail e senha e tente novamente.',
           variant: 'destructive',
         });
       }
-    } catch (error) {
-      toast({
-        title: 'Erro',
-        description: 'Ocorreu um erro. Tente novamente.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsLoading(false);
+
+    } else {
+      // --- LÓGICA DE CADASTRO (agora chama nossa nova API) ---
+      try {
+        const response = await fetch('/api/cadastrar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            nome: formData.name,
+            email: formData.email,
+            senha: formData.password,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          toast({
+            title: 'Conta criada com sucesso! ✅',
+            description: 'Agora você já pode fazer o login.',
+          });
+          onClose(); // Fecha o modal para o usuário poder fazer login
+        } else {
+          // Mostra o erro específico que a API retornou (ex: email já existe)
+          throw new Error(result.error || 'Ocorreu um erro desconhecido.');
+        }
+      } catch (error: any) {
+        toast({
+          title: 'Erro no cadastro',
+          description: error.message,
+          variant: 'destructive',
+        });
+      }
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -138,4 +170,4 @@ const AuthModal = ({ isOpen, onClose, mode }: AuthModalProps) => {
   );
 };
 
-export default AuthModal;
+export default AuthModal; 

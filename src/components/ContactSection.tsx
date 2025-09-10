@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import ContactModal from './ContactModal';
@@ -8,18 +7,22 @@ const ContactSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedContact, setSelectedContact] = useState<{name: string, email: string} | null>(null);
 
+  // ====================================================================
+  // ALTERAÇÃO FEITA AQUI
+  // Mudei os textos de 'role' e 'description' para algo mais profissional
+  // ====================================================================
   const contacts = [
     { 
       name: 'Leonardo Land', 
       email: 'leonardoramalholand@gmail.com',
-      role: 'Desenvolvedor & Pesquisador',
-      description: 'Especialista em desenvolvimento web e acessibilidade digital'
+      role: 'Idealizador do Projeto',
+      description: 'Focado em tornar Portão/RS um lugar mais acessível através da tecnologia.'
     },
     { 
       name: 'Gabriel Henry', 
-      email: 'gabriel.henry@example.com',
-      role: 'Designer & Analista',
-      description: 'Focado em UX/UI e experiência do usuário inclusiva'
+      email: 'gabriel.henry@example.com', // Lembre-se de trocar pelo e-mail correto do Gabriel
+      role: 'Idealizador do Projeto',
+      description: 'Focado em criar uma experiência inclusiva e de fácil uso para todos os usuários.'
     }
   ];
 

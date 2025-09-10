@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from './AuthContext';
@@ -75,8 +74,10 @@ const Header = () => {
             </button>
           </nav>
 
-          {/* Auth Buttons */}
-          <div className="flex items-center space-x-4">
+          {/* ==================================================================== */}
+          {/* ALTERAÇÃO FEITA AQUI: Adicionado o botão "Criar Conta" */}
+          {/* ==================================================================== */}
+          <div className="flex items-center space-x-2">
             {user ? (
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2 text-white">
@@ -96,11 +97,17 @@ const Header = () => {
               <>
                 <Button 
                   onClick={() => openAuthModal('login')}
-                  variant="outline" 
-                  size="sm"
-                  className="bg-white text-conecta-blue hover:bg-gray-100 border-white font-medium"
+                  variant="ghost" 
+                  className="text-white hover:bg-white/10 hover:text-white"
                 >
                   Entrar
+                </Button>
+                <Button 
+                  onClick={() => openAuthModal('signup')}
+                  size="sm"
+                  className="bg-white text-conecta-blue hover:bg-gray-200 font-semibold"
+                >
+                  Criar Conta
                 </Button>
               </>
             )}
