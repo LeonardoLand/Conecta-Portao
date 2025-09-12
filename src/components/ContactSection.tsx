@@ -20,7 +20,7 @@ const ContactSection = () => {
     },
     { 
       name: 'Gabriel Henry', 
-      email: 'gabriel.henry@example.com', // Lembre-se de trocar pelo e-mail correto do Gabriel
+      email: 'gabrielhenry2705@gmail.com', // Lembre-se de trocar pelo e-mail correto do Gabriel
       role: 'Idealizador do Projeto',
       description: 'Focado em criar uma experiência inclusiva e de fácil uso para todos os usuários.'
     }
