@@ -1,28 +1,18 @@
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from './AuthContext';
-import { useToast } from '@/hooks/use-toast';
-import { Map, FileText, Lock, CheckCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+// import { useToast } from '@/hooks/use-toast'; // Não é mais necessário aqui
+import { Map, FileText, CheckCircle } from 'lucide-react'; // Removido o 'Lock'
+import { useNavigate, Link } from 'react-router-dom'; // Adicionado Link
 
 const PlatformSection = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
+  // A verificação de 'user' não é mais necessária para a lógica desta seção
+  // const { user } = useAuth();
+  // const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleMapAccess = () => {
-    if (!user) {
-      toast({
-        title: "Acesso Restrito",
-        description: "Você precisa estar logado para acessar o mapa.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    navigate('/mapa');
-  };
+  // Esta função não é mais necessária, vamos usar o Link direto
+  // const handleMapAccess = () => { ... };
 
   const handleReportAccess = () => {
     navigate('/documentacao');
@@ -53,12 +43,9 @@ const PlatformSection = () => {
                   <CardTitle className="text-2xl font-bold text-gray-900 group-hover:text-conecta-blue transition-colors">
                     Mapa de Acessibilidade
                   </CardTitle>
-                  {!user && (
-                    <div className="flex items-center space-x-2 text-amber-600 text-sm mt-1">
-                      <Lock className="h-4 w-4" />
-                      <span>Login necessário</span>
-                    </div>
-                  )}
+                  {/* ==================================================================== */}
+                  {/* REMOVIDO: A tag "Login necessário" foi apagada daqui */}
+                  {/* ==================================================================== */}
                 </div>
               </div>
             </CardHeader>
@@ -82,11 +69,16 @@ const PlatformSection = () => {
                 </div>
               </div>
               
+              {/* ==================================================================== */}
+              {/* ALTERADO: O botão agora é um Link direto para /mapa, sem verificação */}
+              {/* ==================================================================== */}
               <Button 
-                onClick={handleMapAccess}
+                asChild
                 className="w-full bg-conecta-blue hover:bg-conecta-blue/90 text-white py-3 text-lg font-semibold rounded-xl transition-all duration-300 hover:scale-105"
               >
-                {user ? 'Explorar o Mapa Agora' : 'Fazer Login para Acessar'}
+                <Link to="/mapa">
+                  Explorar o Mapa Agora
+                </Link>
               </Button>
             </CardContent>
           </Card>
