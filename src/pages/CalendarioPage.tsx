@@ -33,86 +33,35 @@ const eventosSimulados: Evento[] = [
     id: 1,
     titulo: "Workshop de Informática Inclusiva",
     descricao: "Aprenda a usar tecnologias assistivas para navegação na internet e uso de computadores",
-    data: "2024-01-15",
+    data: "2025-10-15",
     horario: "14:00",
     local: "Centro Comunitário Portão",
     tipoDeficiencia: ["Deficiência Visual", "Deficiência Auditiva"],
-    contato: {
-      nome: "Maria Silva",
-      telefone: "(51) 9999-1234",
-      email: "maria@centroportao.org.br"
-    },
-    acessibilidade: {
-      rampas: true,
-      banheirosAdaptados: true,
-      estacionamento: true,
-      interprete: true,
-      audioDescricao: true
-    }
+    contato: { nome: "Maria Silva", telefone: "(51) 9999-1234", email: "maria@centroportao.org.br" },
+    acessibilidade: { rampas: true, banheirosAdaptados: true, estacionamento: true, interprete: true, audioDescricao: true }
   },
   {
     id: 2,
     titulo: "Grupo de Apoio - Mobilidade Reduzida",
     descricao: "Encontro mensal para troca de experiências e apoio mútuo entre pessoas com mobilidade reduzida",
-    data: "2024-01-20",
+    data: "2025-10-20",
     horario: "10:00",
     local: "UBS Portão - Sala de Reuniões",
     tipoDeficiencia: ["Mobilidade Reduzida", "Cadeirantes"],
-    contato: {
-      nome: "João Santos",
-      telefone: "(51) 8888-5678",
-      email: "joao.santos@saude.rs.gov.br"
-    },
-    acessibilidade: {
-      rampas: true,
-      banheirosAdaptados: true,
-      estacionamento: true,
-      interprete: false,
-      audioDescricao: false
-    }
+    contato: { nome: "João Santos", telefone: "(51) 8888-5678", email: "joao.santos@saude.rs.gov.br" },
+    acessibilidade: { rampas: true, banheirosAdaptados: true, estacionamento: true, interprete: false, audioDescricao: false }
   },
   {
     id: 3,
     titulo: "Aula de Libras para Iniciantes",
     descricao: "Curso básico de Língua Brasileira de Sinais aberto para toda a comunidade",
-    data: "2024-01-25",
+    data: "2025-11-05",
     horario: "19:00",
     local: "Escola Municipal João da Silva",
     tipoDeficiencia: ["Deficiência Auditiva", "Comunidade em Geral"],
-    contato: {
-      nome: "Ana Oliveira",
-      telefone: "(51) 7777-9012",
-      email: "ana.libras@educacao.portao.rs.gov.br"
-    },
-    acessibilidade: {
-      rampas: true,
-      banheirosAdaptados: true,
-      estacionamento: false,
-      interprete: true,
-      audioDescricao: false
-    }
+    contato: { nome: "Ana Oliveira", telefone: "(51) 7777-9012", email: "ana.libras@educacao.portao.rs.gov.br" },
+    acessibilidade: { rampas: true, banheirosAdaptados: true, estacionamento: false, interprete: true, audioDescricao: false }
   },
-  {
-    id: 4,
-    titulo: "Caminhada Inclusiva no Parque",
-    descricao: "Atividade física adaptada para pessoas com diferentes tipos de deficiência",
-    data: "2024-02-03",
-    horario: "08:00",
-    local: "Parque Municipal de Portão",
-    tipoDeficiencia: ["Todas as Deficiências"],
-    contato: {
-      nome: "Carlos Ferreira",
-      telefone: "(51) 6666-3456",
-      email: "carlos@esporteinclusivo.org.br"
-    },
-    acessibilidade: {
-      rampas: true,
-      banheirosAdaptados: true,
-      estacionamento: true,
-      interprete: true,
-      audioDescricao: true
-    }
-  }
 ];
 
 const CalendarioPage = () => {
@@ -125,22 +74,13 @@ const CalendarioPage = () => {
   const [anoSelecionado, setAnoSelecionado] = useState(new Date().getFullYear());
 
   useEffect(() => {
-    if (!user) {
-      toast({
-        title: "Acesso Negado",
-        description: "Você precisa estar logado para acessar o calendário.",
-        variant: "destructive",
-      });
-      navigate('/');
-      return;
-    }
-
+    // A trava de login foi removida daqui. Agora a página é pública.
     setEventos(eventosSimulados);
     toast({
       title: "Calendário Carregado! 📅",
       description: "Explore os eventos inclusivos de Portão/RS.",
     });
-  }, [user, navigate, toast]);
+  }, [toast]);
 
   const meses = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -158,23 +98,13 @@ const CalendarioPage = () => {
     });
   };
 
-  if (!user) {
-    return null;
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Button
-                onClick={() => navigate('/')}
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2"
-              >
+              <Button onClick={() => navigate('/')} variant="outline" size="sm" className="flex items-center gap-2">
                 <ArrowLeft className="h-4 w-4" />
                 Voltar
               </Button>
@@ -183,16 +113,17 @@ const CalendarioPage = () => {
                 <p className="text-gray-600">Eventos acessíveis em Portão/RS</p>
               </div>
             </div>
-            <div className="text-sm text-gray-600">
-              Bem-vindo, <span className="font-semibold text-conecta-blue">{user.name}</span>
-            </div>
+            {user && ( // Mostra o "Bem-vindo" apenas se o usuário estiver logado
+              <div className="text-sm text-gray-600">
+                Bem-vindo, <span className="font-semibold text-conecta-blue">{user.name}</span>
+              </div>
+            )}
           </div>
         </div>
       </header>
 
       <div className="container mx-auto px-6 py-8">
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Calendário */}
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
@@ -281,7 +212,6 @@ const CalendarioPage = () => {
             </Card>
           </div>
 
-          {/* Sidebar com detalhes do evento */}
           <div className="lg:col-span-1">
             {eventoSelecionado ? (
               <Card>
@@ -294,12 +224,10 @@ const CalendarioPage = () => {
                     <h4 className="font-semibold text-gray-800 mb-2">📅 Data e Horário</h4>
                     <p className="text-sm">{formatarData(eventoSelecionado.data)} às {eventoSelecionado.horario}</p>
                   </div>
-
                   <div>
                     <h4 className="font-semibold text-gray-800 mb-2">📍 Local</h4>
                     <p className="text-sm">{eventoSelecionado.local}</p>
                   </div>
-
                   <div>
                     <h4 className="font-semibold text-gray-800 mb-2">👥 Público-Alvo</h4>
                     <div className="flex flex-wrap gap-2">
@@ -310,52 +238,22 @@ const CalendarioPage = () => {
                       ))}
                     </div>
                   </div>
-
                   <div>
                     <h4 className="font-semibold text-gray-800 mb-2">♿ Recursos de Acessibilidade</h4>
                     <div className="space-y-2 text-sm">
-                      <div className={`flex items-center gap-2 ${eventoSelecionado.acessibilidade.rampas ? 'text-green-600' : 'text-red-500'}`}>
-                        <span>{eventoSelecionado.acessibilidade.rampas ? '✓' : '✗'}</span>
-                        Rampas de acesso
-                      </div>
-                      <div className={`flex items-center gap-2 ${eventoSelecionado.acessibilidade.banheirosAdaptados ? 'text-green-600' : 'text-red-500'}`}>
-                        <span>{eventoSelecionado.acessibilidade.banheirosAdaptados ? '✓' : '✗'}</span>
-                        Banheiros adaptados
-                      </div>
-                      <div className={`flex items-center gap-2 ${eventoSelecionado.acessibilidade.estacionamento ? 'text-green-600' : 'text-red-500'}`}>
-                        <span>{eventoSelecionado.acessibilidade.estacionamento ? '✓' : '✗'}</span>
-                        Estacionamento reservado
-                      </div>
-                      <div className={`flex items-center gap-2 ${eventoSelecionado.acessibilidade.interprete ? 'text-green-600' : 'text-red-500'}`}>
-                        <span>{eventoSelecionado.acessibilidade.interprete ? '✓' : '✗'}</span>
-                        Intérprete de Libras
-                      </div>
-                      <div className={`flex items-center gap-2 ${eventoSelecionado.acessibilidade.audioDescricao ? 'text-green-600' : 'text-red-500'}`}>
-                        <span>{eventoSelecionado.acessibilidade.audioDescricao ? '✓' : '✗'}</span>
-                        Audiodescrição
-                      </div>
+                      <div className={`flex items-center gap-2 ${eventoSelecionado.acessibilidade.rampas ? 'text-green-600' : 'text-red-500'}`}><span>{eventoSelecionado.acessibilidade.rampas ? '✓' : '✗'}</span> Rampas de acesso</div>
+                      <div className={`flex items-center gap-2 ${eventoSelecionado.acessibilidade.banheirosAdaptados ? 'text-green-600' : 'text-red-500'}`}><span>{eventoSelecionado.acessibilidade.banheirosAdaptados ? '✓' : '✗'}</span> Banheiros adaptados</div>
+                      <div className={`flex items-center gap-2 ${eventoSelecionado.acessibilidade.estacionamento ? 'text-green-600' : 'text-red-500'}`}><span>{eventoSelecionado.acessibilidade.estacionamento ? '✓' : '✗'}</span> Estacionamento reservado</div>
+                      <div className={`flex items-center gap-2 ${eventoSelecionado.acessibilidade.interprete ? 'text-green-600' : 'text-red-500'}`}><span>{eventoSelecionado.acessibilidade.interprete ? '✓' : '✗'}</span> Intérprete de Libras</div>
+                      <div className={`flex items-center gap-2 ${eventoSelecionado.acessibilidade.audioDescricao ? 'text-green-600' : 'text-red-500'}`}><span>{eventoSelecionado.acessibilidade.audioDescricao ? '✓' : '✗'}</span> Audiodescrição</div>
                     </div>
                   </div>
-                  
                   <div>
                     <h4 className="font-semibold text-gray-800 mb-2">📞 Contato</h4>
                     <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        {eventoSelecionado.contato.nome}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-4 w-4" />
-                        <a href={`tel:${eventoSelecionado.contato.telefone}`} className="text-conecta-blue hover:underline">
-                          {eventoSelecionado.contato.telefone}
-                        </a>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4" />
-                        <a href={`mailto:${eventoSelecionado.contato.email}`} className="text-conecta-blue hover:underline">
-                          {eventoSelecionado.contato.email}
-                        </a>
-                      </div>
+                      <div className="flex items-center gap-2"><Users className="h-4 w-4" /> {eventoSelecionado.contato.nome}</div>
+                      <div className="flex items-center gap-2"><Phone className="h-4 w-4" /> <a href={`tel:${eventoSelecionado.contato.telefone}`} className="text-conecta-blue hover:underline">{eventoSelecionado.contato.telefone}</a></div>
+                      <div className="flex items-center gap-2"><Mail className="h-4 w-4" /> <a href={`mailto:${eventoSelecionado.contato.email}`} className="text-conecta-blue hover:underline">{eventoSelecionado.contato.email}</a></div>
                     </div>
                   </div>
                 </CardContent>
