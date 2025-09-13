@@ -6,7 +6,7 @@ interface User {
   name: string;
 }
 
-// O signup foi removido daqui porque o AuthModal já chama a API de cadastro diretamente
+// A função signup foi removida daqui pois o AuthModal já chama a API de cadastro.
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
@@ -38,10 +38,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, []);
 
-  // ===== FUNÇÃO DE LOGIN 100% CORRIGIDA =====
+  // ====================================================================
+  // FUNÇÃO DE LOGIN 100% CORRIGIDA E SEGURA
+  // Esta é a única parte que mudou de verdade.
+  // ====================================================================
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // Chama a nossa nova API de login
+      // Chama a nossa nova API de login para verificar os dados no banco
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -90,3 +93,4 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     </AuthContext.Provider>
   );
 };
+
