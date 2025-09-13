@@ -1,4 +1,5 @@
-// Conteúdo para o arquivo: api/login.ts
+// Copie e cole este código no novo arquivo: api/login.ts
+
 import { sql } from '@vercel/postgres';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
@@ -14,7 +15,7 @@ export default async function handler(
     const { email, senha } = request.body;
 
     if (!email || !senha) {
-      return response.status(400).json({ error: 'Email and senha são obrigatórios.' });
+      return response.status(400).json({ error: 'Email e senha são obrigatórios.' });
     }
 
     // Busca no banco de dados por um usuário com o email fornecido
@@ -22,18 +23,18 @@ export default async function handler(
       SELECT * FROM Usuarios WHERE Email = ${email};
     `;
 
-    // Verifica se o usuário foi encontrado
+    // Se não encontrar nenhum usuário, retorna erro
     if (rows.length === 0) {
       return response.status(404).json({ error: 'Usuário não encontrado.' });
     }
 
     const usuario = rows[0];
 
-    // Compara a senha fornecida com a senha salva no banco
+    // Compara a senha que o usuário digitou com a senha salva no banco
     if (usuario.senha !== senha) {
       return response.status(401).json({ error: 'Senha incorreta.' });
     }
-
+    
     // Se a senha estiver correta, retorna os dados do usuário (sem a senha!)
     const usuarioParaRetornar = {
       id: usuario.id,

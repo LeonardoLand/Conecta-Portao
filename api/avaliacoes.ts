@@ -1,4 +1,5 @@
-// Importa as ferramentas necessárias da Vercel
+// Copie e cole este código completo no arquivo: api/avaliacoes.ts
+
 import { sql } from '@vercel/postgres';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
@@ -38,13 +39,13 @@ export default async function handler(
     // Se der algum erro (como a tabela ainda não existir), ele captura o erro
     console.error(error);
     
-    // Se o erro for especificamente "tabela não existe", retorna uma lista vazia, o que é seguro
+    // CORREÇÃO IMPORTANTE: Se o erro for "tabela não existe"...
     if (error.message.includes('relation "avaliacoes" does not exist')) {
+      // ...em vez de quebrar, ele responde com uma lista vazia, o que é seguro.
       return response.status(200).json([]);
     }
     
-    // Para outros erros, envia uma mensagem de erro genérica
+    // Para qualquer outro erro, ele avisa que deu problema.
     return response.status(500).json({ error: error.message });
   }
 }
-

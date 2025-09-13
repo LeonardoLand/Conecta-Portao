@@ -1,3 +1,5 @@
+// Substitua TODO o conteúdo de: src/pages/CalendarioPage.tsx
+
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/AuthContext';
 import { useNavigate } from 'react-router-dom';
